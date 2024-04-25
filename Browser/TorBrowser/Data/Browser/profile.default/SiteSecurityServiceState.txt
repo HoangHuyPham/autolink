@@ -1,0 +1,7 @@
+ngocrongking.com:HSTS	0	19773	1739940148249,1,0
+bridges.torproject.org:HSTS	5	19828	1728960617128,1,0
+cdn.jsdelivr.net:HSTS	0	19773	1739940145924,1,1
+securedrop.org:HSTS	10	19828	1776264410879,1,1
+cdn-fastly.torproject.org:HSTS	2	19808	1719159559202,1,0
+aus1.torproject.org:HSTS	16	19837	1728960428366,1,0
+cdn.torproject.org:HSTS	2	19808	1727151551710,1,0

@@ -1,0 +1,98 @@
+2024-03-26 13:30:25+0700: PATCH DIRECTORY C:\Users\Administrator\Desktop\torbrowser\Browser\TorBrowser\UpdateInfo\updates\0
+2024-03-26 13:30:25+0700: INSTALLATION DIRECTORY C:\Users\Administrator\Desktop\torbrowser\Browser
+2024-03-26 13:30:25+0700: WORKING DIRECTORY C:\Users\Administrator\Desktop\torbrowser\Browser
+2024-03-26 13:30:25+0700: UPDATE TYPE partial
+2024-03-26 13:30:25+0700: PREPARE PATCH xul.dll
+2024-03-26 13:30:25+0700: PREPARE PATCH updater.exe
+2024-03-26 13:30:25+0700: PREPARE PATCH tbb_version.json
+2024-03-26 13:30:25+0700: PREPARE PATCH softokn3.dll
+2024-03-26 13:30:25+0700: PREPARE ADD removed-files
+2024-03-26 13:30:25+0700: PREPARE PATCH qipcap64.dll
+2024-03-26 13:30:25+0700: PREPARE ADD precomplete
+2024-03-26 13:30:25+0700: PREPARE PATCH plugin-container.exe
+2024-03-26 13:30:25+0700: PREPARE PATCH platform.ini
+2024-03-26 13:30:25+0700: PREPARE PATCH osclientcerts.dll
+2024-03-26 13:30:25+0700: PREPARE PATCH omni.ja
+2024-03-26 13:30:26+0700: PREPARE PATCH nssckbi.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH nss3.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH mozglue.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH mozavutil.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH mozavcodec.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH libGLESv2.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH libEGL.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH lgpllibs.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH ipcclientcerts.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH freebl3.dll
+2024-03-26 13:30:26+0700: PREPARE PATCH firefox.exe
+2024-03-26 13:30:26+0700: PREPARE PATCH browser/omni.ja
+2024-03-26 13:30:26+0700: PREPARE PATCH application.ini
+2024-03-26 13:30:26+0700: PREPARE PATCH TorBrowser/Tor/PluggableTransports/snowflake-client.exe
+2024-03-26 13:30:26+0700: PREPARE PATCH TorBrowser/Docs/ChangeLog.txt
+2024-03-26 13:30:26+0700: PREPARE PATCH AccessibleMarshal.dll
+2024-03-26 13:30:26+0700: EXECUTE PATCH xul.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH updater.exe
+2024-03-26 13:30:27+0700: EXECUTE PATCH tbb_version.json
+2024-03-26 13:30:27+0700: EXECUTE PATCH softokn3.dll
+2024-03-26 13:30:27+0700: EXECUTE ADD removed-files
+2024-03-26 13:30:27+0700: EXECUTE PATCH qipcap64.dll
+2024-03-26 13:30:27+0700: EXECUTE ADD precomplete
+2024-03-26 13:30:27+0700: EXECUTE PATCH plugin-container.exe
+2024-03-26 13:30:27+0700: EXECUTE PATCH platform.ini
+2024-03-26 13:30:27+0700: EXECUTE PATCH osclientcerts.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH omni.ja
+2024-03-26 13:30:27+0700: EXECUTE PATCH nssckbi.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH nss3.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH mozglue.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH mozavutil.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH mozavcodec.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH libGLESv2.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH libEGL.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH lgpllibs.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH ipcclientcerts.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH freebl3.dll
+2024-03-26 13:30:27+0700: EXECUTE PATCH firefox.exe
+2024-03-26 13:30:27+0700: EXECUTE PATCH browser/omni.ja
+2024-03-26 13:30:27+0700: EXECUTE PATCH application.ini
+2024-03-26 13:30:27+0700: EXECUTE PATCH TorBrowser/Tor/PluggableTransports/snowflake-client.exe
+2024-03-26 13:30:27+0700: EXECUTE PATCH TorBrowser/Docs/ChangeLog.txt
+2024-03-26 13:30:27+0700: EXECUTE PATCH AccessibleMarshal.dll
+2024-03-26 13:30:27+0700: FINISH PATCH xul.dll
+2024-03-26 13:30:27+0700: FINISH PATCH updater.exe
+2024-03-26 13:30:27+0700: ensure_remove: failed to remove file: C:\Users\Administrator\Desktop\torbrowser\Browser/updater.exe.moz-backup, rv: -1, err: 13
+2024-03-26 13:30:27+0700: backup_discard: unable to remove: updater.exe.moz-backup
+2024-03-26 13:30:27+0700: FINISH PATCH tbb_version.json
+2024-03-26 13:30:27+0700: FINISH PATCH softokn3.dll
+2024-03-26 13:30:27+0700: ensure_remove: failed to remove file: C:\Users\Administrator\Desktop\torbrowser\Browser/softokn3.dll.moz-backup, rv: -1, err: 13
+2024-03-26 13:30:27+0700: backup_discard: unable to remove: softokn3.dll.moz-backup
+2024-03-26 13:30:27+0700: FINISH ADD removed-files
+2024-03-26 13:30:27+0700: FINISH PATCH qipcap64.dll
+2024-03-26 13:30:27+0700: FINISH ADD precomplete
+2024-03-26 13:30:27+0700: FINISH PATCH plugin-container.exe
+2024-03-26 13:30:27+0700: FINISH PATCH platform.ini
+2024-03-26 13:30:27+0700: FINISH PATCH osclientcerts.dll
+2024-03-26 13:30:27+0700: FINISH PATCH omni.ja
+2024-03-26 13:30:27+0700: FINISH PATCH nssckbi.dll
+2024-03-26 13:30:27+0700: FINISH PATCH nss3.dll
+2024-03-26 13:30:27+0700: ensure_remove: failed to remove file: C:\Users\Administrator\Desktop\torbrowser\Browser/nss3.dll.moz-backup, rv: -1, err: 13
+2024-03-26 13:30:27+0700: backup_discard: unable to remove: nss3.dll.moz-backup
+2024-03-26 13:30:27+0700: FINISH PATCH mozglue.dll
+2024-03-26 13:30:27+0700: ensure_remove: failed to remove file: C:\Users\Administrator\Desktop\torbrowser\Browser/mozglue.dll.moz-backup, rv: -1, err: 13
+2024-03-26 13:30:27+0700: backup_discard: unable to remove: mozglue.dll.moz-backup
+2024-03-26 13:30:27+0700: FINISH PATCH mozavutil.dll
+2024-03-26 13:30:27+0700: FINISH PATCH mozavcodec.dll
+2024-03-26 13:30:27+0700: FINISH PATCH libGLESv2.dll
+2024-03-26 13:30:27+0700: FINISH PATCH libEGL.dll
+2024-03-26 13:30:27+0700: FINISH PATCH lgpllibs.dll
+2024-03-26 13:30:27+0700: FINISH PATCH ipcclientcerts.dll
+2024-03-26 13:30:27+0700: FINISH PATCH freebl3.dll
+2024-03-26 13:30:27+0700: ensure_remove: failed to remove file: C:\Users\Administrator\Desktop\torbrowser\Browser/freebl3.dll.moz-backup, rv: -1, err: 13
+2024-03-26 13:30:27+0700: backup_discard: unable to remove: freebl3.dll.moz-backup
+2024-03-26 13:30:27+0700: FINISH PATCH firefox.exe
+2024-03-26 13:30:27+0700: FINISH PATCH browser/omni.ja
+2024-03-26 13:30:27+0700: FINISH PATCH application.ini
+2024-03-26 13:30:27+0700: FINISH PATCH TorBrowser/Tor/PluggableTransports/snowflake-client.exe
+2024-03-26 13:30:27+0700: FINISH PATCH TorBrowser/Docs/ChangeLog.txt
+2024-03-26 13:30:27+0700: FINISH PATCH AccessibleMarshal.dll
+2024-03-26 13:30:27+0700: succeeded
+2024-03-26 13:30:27+0700: calling QuitProgressUI
+2024-03-26 13:30:28+0700: NS_main: unable to remove directory: tobedeleted, err: 41
