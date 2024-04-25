@@ -57,7 +57,7 @@ def runTor():
     overwriteTorrc()
     killTor()
     print("try running Tor...")
-    os.startfile(__file__+"\\..\\Browser\\TorBrowser\\Tor\\tor.exe")
+    os.startfile(os.getcwd()+"\\Browser\\TorBrowser\\Tor\\tor.exe")
     
     while(not tryConnectToTor()):
         time.sleep(1)
@@ -123,4 +123,3 @@ def overwriteTorrc():
 
 def getTimeHHmmss(sec):
     return "{h}:{m}:{s}".format(h=time.gmtime(sec).tm_hour, s=time.gmtime(sec).tm_sec, m=time.gmtime(sec).tm_min)
-
