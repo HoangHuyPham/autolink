@@ -1,3 +1,4 @@
 ## **Autolink app**
 
-> Required*: Tor, Firefox, Python were installed
+> Required*: Python were installed
+### Usage: download source file and run main.exe file
