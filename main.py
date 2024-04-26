@@ -29,7 +29,7 @@ class Main:
                 self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime))
             except KeyboardInterrupt:
                 with open("error.log", "a+") as log:
-                    inform = "====end program //{}".format(time.ctime())
+                    inform = "====end program //{}\n".format(time.ctime())
                     log.write(inform)
                     print(inform)    
                 break
@@ -47,12 +47,13 @@ class Main:
         if (tryingTimes>=maxAttemps):
             with open("error.log", "a+") as log:
                 if (isinstance(error, exceptions.TimeoutException)):
-                    log.write(type(e)+str(error))
+                    log.write(type(e)+str(error)+"\n")
             print("Attempt...{time} times (max: {max})\nTrying restart!".format(time=tryingTimes, max=maxAttemps))
             driver.quit()
             self.openChrome(url=self.url)
         else:
             print("Attempt...{time} times".format(time=tryingTimes))
+            driver.quit()
         return tryingTimes
         
                     
