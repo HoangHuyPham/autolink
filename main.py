@@ -25,9 +25,8 @@ class Main:
                 attempt+=1
                 self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime))
             except Exception as e:
-                with open("error.log", "rb") as log:
-                    print(e)
-                    log.write(repr(e))
+                with open("error.log", "a+") as log:
+                    log.write(str(e)+"\n")
             
     def writeLog(self, ip, attepmt, time):
         str = "[Current IP: {}, Attempt: {}, Timelapse: {}]\nCrtl+C to Exit".format(ip, attepmt, time)    
