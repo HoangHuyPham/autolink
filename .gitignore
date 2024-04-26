@@ -1,2 +1,4 @@
 autolink.zip
 __pycache__
+build/
+error.log

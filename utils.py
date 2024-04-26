@@ -123,3 +123,6 @@ def overwriteTorrc():
 
 def getTimeHHmmss(sec):
     return "{h}:{m}:{s}".format(h=time.gmtime(sec).tm_hour, s=time.gmtime(sec).tm_sec, m=time.gmtime(sec).tm_min)
+
+def clear():
+    os.system("cls")
