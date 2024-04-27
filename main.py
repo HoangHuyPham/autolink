@@ -6,9 +6,9 @@ import selenium.common.exceptions as exceptions
 import utils, requests, time, os
 
 class Main:
-    tryingTimes = 10
     token = None
     url = None
+    maxAttempts = 5
     
     def init(self):
         pass
@@ -23,41 +23,43 @@ class Main:
             try:
                 utils.changeCircuit()
                 currentIP = utils.getCurrentIP()
-                self.openChrome(url)
+                res = self.openChrome(url)
                 attempt+=1
                 utils.clear()
-                self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime))
+                self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime), token=res["token"], username=res["userName"], statusCode=res["statusCode"])
             except KeyboardInterrupt:
                 with open("error.log", "a+") as log:
-                    inform = "====end program //{}\n".format(time.ctime())
+                    inform = "====end program with {} attempts //{}\n".format(attempt, time.ctime())
                     log.write(inform)
                     print(inform)    
                 break
             except Exception as e:
                 with open("error.log", "a+") as log:
-                    log.write(type(e)+str(e)+"\n")
+                    log.write(str(e)+"\n")
             
-    def writeLog(self, ip, attepmt, time):
-        str = "[Current IP: {}, Attempt: {}, Timelapse: {}]\nCrtl+C to Exit".format(ip, attepmt, time)    
+    def writeLog(self, ip, token="no token", username="no name", statusCode=-1, attepmt=0, time="unknown"):
+        str = "[Current IP: {}, Token: {}, Username: {}, Status: {}, Attempt: {}, Timelapse: {}]\n<Crtl+C> to Exit".format(ip, token, username, statusCode, attepmt, time)    
         print(str)
         
-    def handleTimeoutError(self, driver, tryingTimes=0, maxAttemps = 3, error = None):
-        tryingTimes +=1
+    def handleTimeoutError(self, driver, tryingTimes=0, maxAttemps = maxAttempts, error = "unknown"):
          # after 3 times trying open page, will restart browser
+        tryingTimes += 1
         if (tryingTimes>=maxAttemps):
             with open("error.log", "a+") as log:
-                if (isinstance(error, exceptions.TimeoutException)):
-                    log.write(type(e)+str(error)+"\n")
-            print("Attempt...{time} times (max: {max})\nTrying restart!".format(time=tryingTimes, max=maxAttemps))
+                log.write(str(error)+"\n")
+            print("{time} times (max: {max})\nTrying restart!".format(time=tryingTimes, max=maxAttemps))
             driver.quit()
-            self.openChrome(url=self.url)
         else:
-            print("Attempt...{time} times".format(time=tryingTimes))
-            driver.quit()
-        return tryingTimes
+            print("{err}{time} times".format(time=tryingTimes, err=str(error)))
         
+        return tryingTimes
                     
-    def openChrome(self, url):
+    def openChrome(self, url) -> dict:
+        resData = {
+            "token":None,
+            "statusCode":None,
+            "userName":None
+        }
         self.url = url
         options = webdriver.FirefoxOptions()
         options.add_argument("--headless")
@@ -72,26 +74,27 @@ class Main:
         driver = webdriver.Firefox(options=options)
         wait = WebDriverWait(driver=driver, timeout=1, ignored_exceptions=exceptions.NoSuchElementException)
         driver.get(url=url)
-        tryingTime = 0
         
         # wait unti page appear
+        tryingTime = 0
         try:
-            wait.until(method=expected_conditions.title_contains("Đăng kí"))
-        except Exception as e:
-            tryingTime=self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e)
-            return
+            wait.until(method=expected_conditions.title_contains("Đăng kí"), message="wait title...")
+        except exceptions.TimeoutException as e:
+            tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
+            if (tryingTime >= self.maxAttempts):
+                return self.openChrome(url=self.url)
+            
         
         # input username
+        tryingTime = 0
         try:
-            wait.until(method=expected_conditions.element_to_be_clickable(driver.find_element(by=By.NAME, value="_token")))
-        except Exception as e:
-            tryingTime=self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e)
-            return
+            wait.until(method=expected_conditions.presence_of_element_located((By.NAME, "_token")), message="find _token...")
+        except exceptions.TimeoutException as e:
+            tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
+            if (tryingTime >= self.maxAttempts):
+                return self.openChrome(url=self.url)
+        
         token = driver.find_element(by=By.NAME, value="_token").get_attribute("value")
-        if (token):
-            print("Found token: ", token)
-        
-        
         username = utils.randomUserName(20)
         proxies = {
             'http': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT),
@@ -116,13 +119,12 @@ class Main:
           
             
         )
-        
-        if (res.status_code >= 200 and res.status_code < 400):
-            print("Success! ", res.status_code)
-        else:
-            print("Failed! ", res.status_code)
-        
         driver.quit()
+        resData["statusCode"] = res.status_code
+        resData["token"] = token
+        resData["userName"] = username
+        
+        return resData
         
         
         
