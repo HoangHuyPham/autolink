@@ -1,7 +1,8 @@
 import random as rd
 import socket, os, time
 from subprocess import Popen,CREATE_NEW_CONSOLE,PIPE
-import psutil, requests, json, urllib3
+import requests.cookies
+import psutil, requests, json, urllib3, math, re
 
 CONTROL_PORT = 9051
 PROXY_PORT = 9050
@@ -53,25 +54,36 @@ def changeCircuit()->int:
 def handleConnectError():
     runTor()
     
+def generateWish(dataTable={}, wish="No thing"):
+    return f"{("="*math.floor((dataTable.items().__len__()*20+3*dataTable.items().__len__()*2- wish.__len__())/2))+wish+("="*math.floor((dataTable.items().__len__()*20+3*dataTable.items().__len__()*2- wish.__len__())/2)):^{dataTable.items().__len__()*20+3*dataTable.items().__len__()*2+5}}"
+    
 def runTor():
     overwriteTorrc()
     killTor()
-    print("try running Tor...")
-    os.startfile(os.getcwd()+"\\Browser\\TorBrowser\\Tor\\tor.exe")
-    
+    print("Try running Tor...")
+    os.system(f'start /b {os.getcwd()+"\\Browser\\TorBrowser\\Tor\\tor.exe"}')
+    attemp = 0
     while(not tryConnectToTor()):
+        attemp+=1
+        if (attemp >= 15):
+            runTor()
+            break
         time.sleep(1)
-        print("wait for Tor...")
-    print("run Tor success...")
+        writeLog("app.log", f"Wait for Tor...{attemp} //{time.ctime()}")
+    
     
 # kill tor if its exist
 def killTor():
     pid = get_pid("tor.exe")
-    if (pid):
-        print("kill Tor...")
-        os.system("taskkill -f -pid {}".format(pid))
+    print("Kill Tor...")
+    if (pid):    
+        if (os.system("taskkill -f -pid {}".format(pid)) == 0):
+            print("Kill Tor success!")
+        else:
+            print("Kill Tor failed! Trying again...")
+            killTor()
     else:
-        print("not found Tor process!")
+        print("Not found Tor process!")
        
     
 def get_pid(name:int=None)-> int:
@@ -126,3 +138,98 @@ def getTimeHHmmss(sec):
 
 def clear():
     os.system("cls")
+    
+def postRequest(url, payload={}, headers={}, cookies={}, proxies={}, allowRedirect=True) -> requests.Response:
+    res = requests.post(
+        url= url,
+        headers=headers,
+        data=payload,
+        cookies=cookies,
+        proxies=proxies,
+        allow_redirects=allowRedirect
+    )
+    return res
+
+def printTable(table:dict={}, maxLen:int = 20,padding =3, replace:str = "."):
+    keys = ""
+    values = ""
+    for key in table.keys():
+        keys += f"{key:^{maxLen+padding*2}}{"|":>}"
+    print(keys)
+    
+    for index, val in enumerate(table.values()):
+        val = str(val)
+        if (val.__len__()>maxLen):
+            val = val[:maxLen-1:]+replace*3
+        
+        values += f"{val:^{maxLen+padding*2}}{"|":>}" 
+    print(values)
+
+def getInviteCount():
+    inviteCount = -1
+    resp1:requests.Response = requests.get("https://ngocrongking.com/dang-nhap", headers={
+        'Content-Type':'application/x-www-form-urlencoded',
+        'Referer': 'https://ngocrongking.com/',
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    })
+
+    inputTag = re.search('<input name="_token" type="hidden" value=".+">', resp1.content.decode("utf-8"))
+    if (inputTag):
+        valueAttr = re.search('value=".+"', inputTag.group()).group().split("value=")[1]
+    else:
+        valueAttr = ""
+
+    _token = valueAttr.removeprefix('"').removesuffix('"')
+
+    resp2 = postRequest(
+    url="https://ngocrongking.com/dang-nhap",
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded',
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://ngocrongking.com/dang-nhap',
+    },
+    cookies={
+        "laravel_session": resp1.cookies.get("laravel_session"),
+        "XSRF-TOKEN": resp1.cookies.get('XSRF-TOKEN')
+    },
+    payload={
+        "_token": _token,
+        "username": "thuat1",
+        "password": "hoanghuy945620"
+    },
+    allowRedirect=False
+    )
+
+    resp3 = requests.get("https://ngocrongking.com",headers={
+        'Content-Type':'application/x-www-form-urlencoded',
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://ngocrongking.com/dang-nhap'
+    }, cookies={
+    "laravel_session": resp2.cookies.get("laravel_session"),
+    "XSRF-TOKEN": resp2.cookies.get('XSRF-TOKEN')
+    })
+
+    resp4 = requests.get("https://ngocrongking.com/link-gioi-thieu", cookies={
+    "laravel_session": resp3.cookies.get("laravel_session"),
+    "XSRF-TOKEN": resp3.cookies.get('XSRF-TOKEN')
+    },headers={
+    'Content-Type':'application/x-www-form-urlencoded',
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Referer': 'https://ngocrongking.com/'
+    })
+
+    inviteTag = re.search(r"Số lần sử dụng: <strong>\d+</strong>", resp4.content.decode("utf-8"))
+    if (inviteTag):
+        inviteCount = int(re.search(r"\d+", inviteTag.group()).group())
+
+    resp1.close()
+    resp2.close()
+    resp3.close()
+    resp4.close()
+    
+    return inviteCount
+
+def writeLog(url="error.log", error:Exception="Unknown error"):
+    with open(url, "a+") as log:
+        log.write(f"{str(error)} //{time.ctime()}"+"\n")
+        
