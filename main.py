@@ -5,6 +5,7 @@ import selenium.webdriver.support.expected_conditions as expected_conditions
 import selenium.common.exceptions as exceptions
 import utils, requests, time, os
 
+
 class Main:
     token = None
     url = None
@@ -28,25 +29,40 @@ class Main:
                 utils.clear()
                 self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime), token=res["token"], username=res["userName"], statusCode=res["statusCode"])
             except KeyboardInterrupt:
-                with open("error.log", "a+") as log:
-                    inform = "====end program with {} attempts //{}\n".format(attempt, time.ctime())
-                    log.write(inform)
-                    print(inform)    
+                inform = "====end program with {} attempts //{}".format(attempt, time.ctime())
+                utils.writeLog(url="app.log", error=f"====end program with {attempt} attempts")
+                utils.killTor() 
+                print(inform)   
                 break
             except Exception as e:
-                with open("error.log", "a+") as log:
-                    log.write(str(e)+"\n")
+                if (not isinstance(e, KeyboardInterrupt)):
+                    utils.writeLog(error=e)
             
-    def writeLog(self, ip, token="no token", username="no name", statusCode=-1, attepmt=0, time="unknown"):
-        str = "[Current IP: {}, Token: {}, Username: {}, Status: {}, Attempt: {}, Timelapse: {}]\n<Crtl+C> to Exit".format(ip, token, username, statusCode, attepmt, time)    
-        print(str)
+    def writeLog(self, ip, token="no token", username="no name", statusCode=-1, attepmt=0, time="unknown", wish="Have a good day (<Crtl+C> to Exit)"): 
+        inviteCount = -1 
+        try:
+            inviteCount = utils.getInviteCount()
+        except Exception as e:
+            utils.writeLog(error=e)
+            
+        print(f"Attempts: {attepmt}")
+        dataTable = {
+            "Invite":inviteCount,
+            "IP Register":ip,
+            "Username":username,
+            "Status":statusCode,
+            "Time":time
+        }
+        utils.printTable(dataTable)
+        print(f"<Crtl+C> to Exit")
+        print(utils.generateWish(dataTable=dataTable, wish=wish))
+     
         
     def handleTimeoutError(self, driver, tryingTimes=0, maxAttemps = maxAttempts, error = "unknown"):
          # after 3 times trying open page, will restart browser
         tryingTimes += 1
         if (tryingTimes>=maxAttemps):
-            with open("error.log", "a+") as log:
-                log.write(str(error)+"\n")
+            utils.writeLog(error=error)
             print("{time} times (max: {max})\nTrying restart!".format(time=tryingTimes, max=maxAttemps))
             driver.quit()
         else:
@@ -96,33 +112,33 @@ class Main:
         
         token = driver.find_element(by=By.NAME, value="_token").get_attribute("value")
         username = utils.randomUserName(20)
-        proxies = {
-            'http': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT),
-            'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
-        }
-        res = requests.post(
-            url="https://ngocrongking.com/dang-ky",
-            headers={
-                'Content-Type':'application/x-www-form-urlencoded'
-            },
-            data={
+        res = utils.postRequest(
+            url = "https://ngocrongking.com/dang-ky",
+            payload={
                 "_token": token,
                 "username": username,
                 "password": "1",
                 "password_confirmation": "1"
+                },
+            headers={
+                'Content-Type':'application/x-www-form-urlencoded'
             },
             cookies={
-                "XSRF-TOKEN":driver.get_cookie('XSRF-TOKEN').get("value"),
-                "laravel_session":driver.get_cookie("laravel_session").get("value")
+                "XSRF-TOKEN": driver.get_cookie('XSRF-TOKEN').get("value"),
+                "laravel_session": driver.get_cookie("laravel_session").get("value")
             },
-            proxies=proxies
-          
-            
+            proxies = {
+                'http': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT),
+                'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
+            }
         )
-        driver.quit()
+        
+        
         resData["statusCode"] = res.status_code
         resData["token"] = token
         resData["userName"] = username
+        res.close()
+        driver.quit()
         
         return resData
         
@@ -134,5 +150,5 @@ if (__name__ == "__main__"):
     main = Main()
     link = input("Input u invite link: ")
     main.start(link)
-  
+ 
 
