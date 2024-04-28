@@ -7,6 +7,7 @@ import psutil, requests, json, urllib3, math, re
 CONTROL_PORT = 9051
 PROXY_PORT = 9050
 GET_IP = "https://api.ipify.org"
+MAX_LEN = 14
 
 # return inclusive min to max 
 def randomUserName(len:int=10)->str:
@@ -54,8 +55,8 @@ def changeCircuit()->int:
 def handleConnectError():
     runTor()
     
-def generateWish(dataTable={}, wish="No thing"):
-    return f"{("="*math.floor((dataTable.items().__len__()*20+3*dataTable.items().__len__()*2- wish.__len__())/2))+wish+("="*math.floor((dataTable.items().__len__()*20+3*dataTable.items().__len__()*2- wish.__len__())/2)):^{dataTable.items().__len__()*20+3*dataTable.items().__len__()*2+5}}"
+def generateWish(dataTable={}, wish="No thing", maxLen=MAX_LEN):
+    return f"{("="*math.floor((dataTable.items().__len__()*maxLen+3*dataTable.items().__len__()*2- wish.__len__())/2))+wish+("="*math.floor((dataTable.items().__len__()*maxLen+3*dataTable.items().__len__()*2- wish.__len__())/2)):^{dataTable.items().__len__()*maxLen+3*dataTable.items().__len__()*2+5}}"
     
 def runTor():
     overwriteTorrc()
@@ -74,13 +75,18 @@ def runTor():
     
 # kill tor if its exist
 def killTor():
+    time.sleep(0.1)
     pid = get_pid("tor.exe")
     print("Kill Tor...")
     if (pid):    
-        if (os.system("taskkill -f -pid {}".format(pid)) == 0):
-            print("Kill Tor success!")
-        else:
-            print("Kill Tor failed! Trying again...")
+        try:
+            if (os.system("taskkill -f -pid {}".format(pid)) == 0):
+                print("Kill Tor success!")
+            else:
+                print("Kill Tor failed! Trying again...")
+                killTor()
+        except Exception as e:
+            writeLog(error=e)
             killTor()
     else:
         print("Not found Tor process!")
@@ -150,7 +156,7 @@ def postRequest(url, payload={}, headers={}, cookies={}, proxies={}, allowRedire
     )
     return res
 
-def printTable(table:dict={}, maxLen:int = 20,padding =3, replace:str = "."):
+def printTable(table:dict={}, maxLen:int = MAX_LEN,padding =3, replace:str = "."):
     keys = ""
     values = ""
     for key in table.keys():

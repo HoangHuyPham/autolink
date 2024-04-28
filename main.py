@@ -148,7 +148,10 @@ class Main:
 
 if (__name__ == "__main__"):
     main = Main()
-    link = input("Input u invite link: ")
-    main.start(link)
- 
+    try:
+        link = input("Input u invite link: ")
+        main.start(link)
+    except KeyboardInterrupt as e:
+        utils.writeLog(url="app.log", error=f"====end program with 0 attempts")
+        utils.killTor() 
 
