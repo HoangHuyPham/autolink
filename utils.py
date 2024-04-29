@@ -171,8 +171,10 @@ def printTable(table:dict={}, maxLen:int = MAX_LEN,padding =3, replace:str = "."
         values += f"{val:^{maxLen+padding*2}}{"|":>}" 
     print(values)
 
-def getInviteCount():
+def getInviteCount(username = None, password = None):
     inviteCount = -1
+    if (not (username and password)):
+        return inviteCount
     resp1:requests.Response = requests.get("https://ngocrongking.com/dang-nhap", headers={
         'Content-Type':'application/x-www-form-urlencoded',
         'Referer': 'https://ngocrongking.com/',
@@ -235,7 +237,10 @@ def getInviteCount():
     
     return inviteCount
 
-def writeLog(url="error.log", error:Exception="Unknown error"):
+def writeLog(url="error.log", error:Exception="Unknown error", appendDate=True):
     with open(url, "a+") as log:
-        log.write(f"{str(error)} //{time.ctime()}"+"\n")
+        if (appendDate):
+            log.write(f"{str(error)} //{time.ctime()}"+"\n")
+        if (appendDate):
+            log.write(f"{str(error)}"+"\n")
         

@@ -10,6 +10,8 @@ class Main:
     token = None
     url = None
     maxAttempts = 5
+    username = None
+    password = None
     
     def init(self):
         pass
@@ -41,7 +43,7 @@ class Main:
     def writeLog(self, ip, token="no token", username="no name", statusCode=-1, attepmt=0, time="unknown", wish="Have a good day (<Crtl+C> to Exit)"): 
         inviteCount = -1 
         try:
-            inviteCount = utils.getInviteCount()
+            inviteCount = utils.getInviteCount(username= self.username, password= self.password)
         except Exception as e:
             utils.writeLog(error=e)
             
@@ -142,16 +144,74 @@ class Main:
         
         return resData
         
-        
-        
-
+    def preStart(self):
+        try:
+            with open("account", "r") as f:
+                data = f.readline()
+                if (data):
+                    answ = input(f"Detect an account ({data.split(":")[0]})! Do u wanna track it?(Y/N): ")
+                    if (answ):
+                        if (answ.upper() == "Y"):
+                            if (data):
+                                arr = data.split(":")
+                            if (arr.__len__()>=2):
+                                self.username = arr[0]
+                                self.password = arr[1]
+                            if (not (self.username and self.password)):
+                                print("Lack of field!...")
+                                self.username = None
+                                self.password = None
+                        else:
+                            print("Input username:password //Inorge (Enter) if no use invite count tracking!")
+                            inputUP = input("Input here(username:password): ")
+                            if (inputUP):
+                                arr = inputUP.split(":")
+                                if (arr.__len__()>=2):
+                                    self.username = arr[0]
+                                    self.password = arr[1]
+                                    if (not (self.username and self.password)):
+                                        ("Lack of field!...")
+                                        self.username = None
+                                        self.password = None
+                                    else:
+                                        with open("account", "w+") as f:
+                                            f.write(inputUP)
+                                else:
+                                    print("Lack of field!...")
+                            else:
+                                print("Inorge!...")
+                else:
+                    print("Input username:password //Inorge (Enter) if no use invite count tracking!")
+                    inputUP = input("Input here(username:password): ")
+                    if (inputUP):
+                        arr = inputUP.split(":")
+                        if (arr.__len__()>=2):
+                            self.username = arr[0]
+                            self.password = arr[1]
+                            if (not (self.username and self.password)):
+                                print("Lack of field!...")
+                                self.username = None
+                                self.password = None
+                            else:
+                                with open("account", "w+") as f:
+                                    f.write(inputUP)
+                        else:
+                            print("Lack of field!...")
+                    else:
+                        print("Inorge!...")
+        except FileNotFoundError as e:
+            utils.writeLog(error=e)
+            open("account", "w+")
+            self.preStart()
 
 if (__name__ == "__main__"):
     main = Main()
     try:
         link = input("Input u invite link: ")
+        main.preStart()
         main.start(link)
     except KeyboardInterrupt as e:
         utils.writeLog(url="app.log", error=f"====end program with 0 attempts")
         utils.killTor() 
-
+   
+    
