@@ -119,18 +119,18 @@ def tryConnectToTor():
         s.close()
     return isSuccess and resp == 250
 
-def getCurrentIP():
+def getCurrentIP(checkConnect=False):
     proxies = {
         'http': "socks5://127.0.0.1:{}".format(PROXY_PORT),
         'https': "socks5://127.0.0.1:{}".format(PROXY_PORT)
     }
     try:
-        resp = requests.get(GET_IP, proxies=proxies)
-    except:
-        try:
+        if (checkConnect):
             resp = requests.get(GET_IP)
-        except:
-            return None
+        else:
+            resp = requests.get(GET_IP, proxies=proxies)
+    except:
+        return None
 
     return resp.content.decode("utf-8")
     
@@ -175,6 +175,7 @@ def getInviteCount(username = None, password = None):
     inviteCount = -1
     if (not (username and password)):
         return inviteCount
+    
     resp1:requests.Response = requests.get("https://ngocrongking.com/dang-nhap", headers={
         'Content-Type':'application/x-www-form-urlencoded',
         'Referer': 'https://ngocrongking.com/',
