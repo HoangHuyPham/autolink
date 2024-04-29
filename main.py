@@ -28,7 +28,6 @@ class Main:
                 currentIP = utils.getCurrentIP()
                 res = self.openChrome(url)
                 attempt+=1
-                utils.clear()
                 self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime), token=res["token"], username=res["userName"], statusCode=res["statusCode"])
             except KeyboardInterrupt:
                 inform = "====end program with {} attempts //{}".format(attempt, time.ctime())
@@ -48,6 +47,8 @@ class Main:
             utils.writeLog(error=e)
             
         print(f"Attempts: {attepmt}")
+        if (inviteCount != -1):
+            print(f"Current account: {self.username}")
         dataTable = {
             "Invite":inviteCount,
             "IP Register":ip,
