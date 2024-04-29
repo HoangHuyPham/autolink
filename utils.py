@@ -202,8 +202,8 @@ def getInviteCount(username = None, password = None):
     },
     payload={
         "_token": _token,
-        "username": "thuat1",
-        "password": "hoanghuy945620"
+        "username": username,
+        "password": password
     },
     allowRedirect=False
     )
