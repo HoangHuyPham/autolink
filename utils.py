@@ -157,7 +157,6 @@ def postRequest(url, payload={}, headers={}, cookies={}, proxies={}, allowRedire
     return res
 
 def printTable(table:dict={}, maxLen:int = MAX_LEN,padding =3, replace:str = "."):
-    clear()
     keys = ""
     values = ""
     for key in table.keys():

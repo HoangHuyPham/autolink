@@ -45,7 +45,7 @@ class Main:
             inviteCount = utils.getInviteCount(username= self.username, password= self.password)
         except Exception as e:
             utils.writeLog(error=e)
-            
+        utils.clear()
         print(f"Attempts: {attepmt}")
         if (inviteCount != -1):
             print(f"Current account: {self.username}")
