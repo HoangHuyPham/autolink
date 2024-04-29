@@ -1,9 +1,20 @@
 from selenium import webdriver
+import selenium.common
+import selenium.types
+import selenium.webdriver
+import selenium.webdriver.chrome
+import selenium.webdriver.chrome.remote_connection
+import selenium.webdriver.common
 from selenium.webdriver.common.by import By
+import selenium.webdriver.remote
+import selenium.webdriver.remote.errorhandler
+import selenium.webdriver.remote.remote_connection
+import selenium.webdriver.remote.webdriver
+import selenium.webdriver.support
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as expected_conditions
 import selenium.common.exceptions as exceptions
-import utils, requests, time, os
+import utils, requests, time, os, selenium
 
 
 class Main:
@@ -35,6 +46,8 @@ class Main:
                 utils.killTor() 
                 print(inform)   
                 break
+            except selenium.common.WebDriverException as e:
+                utils.writeLog(error=e)
             except Exception as e:
                 if (not isinstance(e, KeyboardInterrupt)):
                     utils.writeLog(error=e)
@@ -74,75 +87,79 @@ class Main:
         return tryingTimes
                     
     def openChrome(self, url) -> dict:
-        resData = {
-            "token":None,
-            "statusCode":None,
-            "userName":None
-        }
-        self.url = url
-        options = webdriver.FirefoxOptions()
-        options.add_argument("--headless")
-        options.page_load_strategy = "eager"
-        profile = webdriver.FirefoxProfile()
-        profile.set_preference('network.proxy.type', 2)
-        profile.set_preference('network.proxy.socks', '127.0.0.1')
-        profile.set_preference('network.proxy.socks_port', utils.PROXY_PORT)
-        profile.update_preferences()
-        
-        options.profile = profile
-        driver = webdriver.Firefox(options=options)
-        wait = WebDriverWait(driver=driver, timeout=1, ignored_exceptions=exceptions.NoSuchElementException)
-        driver.get(url=url)
-        
-        # wait unti page appear
-        tryingTime = 0
-        try:
-            wait.until(method=expected_conditions.title_contains("Đăng kí"), message="wait title...")
-        except exceptions.TimeoutException as e:
-            tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
-            if (tryingTime >= self.maxAttempts):
-                return self.openChrome(url=self.url)
-            
-        
-        # input username
-        tryingTime = 0
-        try:
-            wait.until(method=expected_conditions.presence_of_element_located((By.NAME, "_token")), message="find _token...")
-        except exceptions.TimeoutException as e:
-            tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
-            if (tryingTime >= self.maxAttempts):
-                return self.openChrome(url=self.url)
-        
-        token = driver.find_element(by=By.NAME, value="_token").get_attribute("value")
-        username = utils.randomUserName(20)
-        res = utils.postRequest(
-            url = "https://ngocrongking.com/dang-ky",
-            payload={
-                "_token": token,
-                "username": username,
-                "password": "1",
-                "password_confirmation": "1"
-                },
-            headers={
-                'Content-Type':'application/x-www-form-urlencoded'
-            },
-            cookies={
-                "XSRF-TOKEN": driver.get_cookie('XSRF-TOKEN').get("value"),
-                "laravel_session": driver.get_cookie("laravel_session").get("value")
-            },
-            proxies = {
-                'http': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT),
-                'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
+        try:   
+            resData = {
+                "token":None,
+                "statusCode":None,
+                "userName":None,
             }
-        )
-        
-        
-        resData["statusCode"] = res.status_code
-        resData["token"] = token
-        resData["userName"] = username
-        res.close()
-        driver.quit()
-        
+            self.url = url
+            options = webdriver.FirefoxOptions()
+            options.add_argument("--headless")
+            options.page_load_strategy = "eager"
+            profile = webdriver.FirefoxProfile()
+            profile.set_preference('network.proxy.type', 2)
+            profile.set_preference('network.proxy.socks', '127.0.0.1')
+            profile.set_preference('network.proxy.socks_port', utils.PROXY_PORT)
+            profile.update_preferences()
+
+            options.profile = profile
+            driver = webdriver.Firefox(options=options)
+            wait = WebDriverWait(driver=driver, timeout=1, ignored_exceptions=exceptions.NoSuchElementException)
+            driver.get(url=url)
+
+            # wait unti page appear
+            tryingTime = 0
+            try:
+                wait.until(method=expected_conditions.title_contains("Đăng kí"), message="wait title...")
+            except exceptions.TimeoutException as e:
+                tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
+                if (tryingTime >= self.maxAttempts):
+                    return self.openChrome(url=self.url)
+
+
+            # input username
+            tryingTime = 0
+            try:
+                wait.until(method=expected_conditions.presence_of_element_located((By.NAME, "_token")), message="find _token...")
+            except exceptions.TimeoutException as e:
+                tryingTime = self.handleTimeoutError(driver=driver, tryingTimes=tryingTime, error=e.msg)
+                if (tryingTime >= self.maxAttempts):
+                    return self.openChrome(url=self.url)
+
+            token = driver.find_element(by=By.NAME, value="_token").get_attribute("value")
+            username = utils.randomUserName(20)
+            res = utils.postRequest(
+                url = "https://ngocrongking.com/dang-ky",
+                payload={
+                    "_token": token,
+                    "username": username,
+                    "password": "1",
+                    "password_confirmation": "1"
+                    },
+                headers={
+                    'Content-Type':'application/x-www-form-urlencoded'
+                },
+                cookies={
+                    "XSRF-TOKEN": driver.get_cookie('XSRF-TOKEN').get("value"),
+                    "laravel_session": driver.get_cookie("laravel_session").get("value")
+                },
+                proxies = {
+                    'http': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT),
+                    'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
+                }
+            )
+
+
+            resData["statusCode"] = res.status_code
+            resData["token"] = token
+            resData["userName"] = username
+            res.close()
+        except selenium.common.WebDriverException as e:
+            utils.writeLog(error=e)
+        finally:
+            driver.quit()  
+            
         return resData
         
     def preStart(self):
