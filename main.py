@@ -32,8 +32,8 @@ class Main:
         currentIP = None
         attempt = 0
         startTime = time.time()
-        
-        while(True):
+        loop = True
+        while(loop):
             try:
                 count=1
                 while (not utils.getCurrentIP(checkConnect=True)):
@@ -42,20 +42,25 @@ class Main:
                     time.sleep(1.2)
                     count = count%4+1
                 resCode1= utils.changeCircuit()
-                print("CHANGE IP ", resCode1)
+                print("CHANGE IP")
                 currentIP = utils.getCurrentIP()
                 res = self.openChrome(url)
                 attempt+=1
                 self.writeLog(currentIP, attepmt=attempt, time=utils.getTimeHHmmss(time.time()-startTime), token=res["token"], username=res["userName"], statusCode=res["statusCode"])
-            except KeyboardInterrupt:
-                inform = "====end program with {} attempts //{}".format(attempt, time.ctime())
-                utils.writeLog(url="app.log", error=f"====end program with {attempt} attempts")
-                utils.killTor() 
-                print(inform)   
-                break     
             except Exception as e:
                 if (not isinstance(e, KeyboardInterrupt)):
                     utils.writeLog(error=e)
+            except KeyboardInterrupt:
+                try:
+                    inform = "====end program with {} attempts //{}".format(attempt, time.ctime())
+                    utils.writeLog(url="app.log", error=f"====end program with {attempt} attempts")
+                    utils.killTor()   
+                    loop = False  
+                except:
+                    pass
+                finally:
+                    utils.clear()
+                    print(inform)    
             
     def writeLog(self, ip, token="no token", username="no name", statusCode=-1, attepmt=0, time="unknown", wish="Have a good day (<Crtl+C> to Exit)"): 
         inviteCount = -1 
@@ -109,7 +114,8 @@ class Main:
                 'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
             }, allow_redirects=False) as resp1:
         
-            print("GET https://ngocrongking.com/")
+            print("GET page")
+            
             with requests.get(url="https://ngocrongking.com/dang-ky", headers={
                 'Content-Type':'application/x-www-form-urlencoded',
                 'Referer': 'https://ngocrongking.com/',
@@ -132,10 +138,11 @@ class Main:
                     valueAttr = ""
                 token = valueAttr.removeprefix('"').removesuffix('"')
 
-                print("GET TOKEN https://ngocrongking.com/dang-ky")
+                print("GET TOKEN page")
                 
         # token = driver.find_element(by=By.NAME, value="_token").get_attribute("value")
         username = utils.randomUserName(20)
+        print(f"REGIST {url}")
         with utils.postRequest(
             url = "https://ngocrongking.com/dang-ky",
             payload={
@@ -158,7 +165,6 @@ class Main:
                 'https': "socks5://127.0.0.1:{}".format(utils.PROXY_PORT)
             }
         ) as resp3:
-            print("REGIST https://ngocrongking.com/")
             resData["statusCode"] = resp3.status_code
             resData["token"] = token
             resData["userName"] = username

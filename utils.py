@@ -77,13 +77,13 @@ def runTor():
 def killTor():
     time.sleep(0.1)
     pid = get_pid("tor.exe")
-    print("Kill Tor...")
+    print("Stop...")
     if (pid):    
         try:
             if (os.system("taskkill -f -pid {}".format(pid)) == 0):
-                print("Kill Tor success!")
+                writeLog("app.log","Kill Tor success!")
             else:
-                print("Kill Tor failed! Trying again...")
+                writeLog("app.log","Kill Tor failed! Trying again...")
                 killTor()
         except Exception as e:
             writeLog(error=e)
