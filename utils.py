@@ -3,6 +3,7 @@ import socket, os, time
 from subprocess import Popen,CREATE_NEW_CONSOLE,PIPE
 import requests.cookies
 import psutil, requests, json, urllib3, math, re
+from pathlib import Path
 
 CONTROL_PORT = 9051
 PROXY_PORT = 9050
@@ -136,8 +137,12 @@ def getCurrentIP(checkConnect=False):
     
 
 def overwriteTorrc():
-    with open(os.environ.get("APPDATA")+"\\tor\\torrc", encoding="utf-8", mode="w") as file:
+    torFolder = Path(rf"{os.environ.get("APPDATA")+"\\tor"}")
+    torFolder.mkdir(exist_ok=True, parents=True)
+    with open(os.environ.get("APPDATA")+"\\tor\\torrc", encoding="utf-8", mode="w+") as file:
+        
         file.write("SOCKSPort 9050\nLog notice stdout\nControlPort 9051\nCookieAuthentication 0")
+
 
 def getTimeHHmmss(sec):
     return "{h}:{m}:{s}".format(h=time.gmtime(sec).tm_hour, s=time.gmtime(sec).tm_sec, m=time.gmtime(sec).tm_min)

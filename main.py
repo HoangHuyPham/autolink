@@ -55,10 +55,10 @@ class Main:
                     inform = "====end program with {} attempts //{}".format(attempt, time.ctime())
                     utils.writeLog(url="app.log", error=f"====end program with {attempt} attempts")
                     utils.killTor()   
-                    loop = False  
                 except:
                     pass
                 finally:
+                    loop = False  
                     utils.clear()
                     print(inform)    
             
